@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: um-api-center
+  datasource:
+    url: ${PLATFORM_DB_URL}
+    username: ${PLATFORM_DB_USERNAME}
+    password: ${PLATFORM_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+server:
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: framework
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
