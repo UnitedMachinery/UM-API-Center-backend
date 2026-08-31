@@ -52,30 +52,19 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>openedge</id>
-            <activation>
-                <property>
-                    <name>openedge.jdbc.enabled</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.ddtek</groupId>
-                    <artifactId>openedge-jdbc</artifactId>
-                    <version>legacy-local</version>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <mainClass>com.um.apicenter.admin.PasswordHashTool</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

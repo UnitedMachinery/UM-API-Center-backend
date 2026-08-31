@@ -2,9 +2,9 @@ spring:
   application:
     name: um-api-center
   datasource:
-    url: ${PLATFORM_DB_URL}
-    username: ${PLATFORM_DB_USERNAME}
-    password: ${PLATFORM_DB_PASSWORD}
+    url: jdbc:mysql://127.0.0.1:3306/um_api_center?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: admin123
     driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     property-naming-strategy: SNAKE_CASE
@@ -16,3 +16,12 @@ server:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+
+um:
+  security:
+    require-https: ${REQUIRE_HTTPS:false}
+  admin-session:
+    cookie-name: UM_API_ADMIN_SESSION
+    cookie-path: /api/admin
+    ttl: PT8H
+    cookie-secure: ${ADMIN_COOKIE_SECURE:false}
