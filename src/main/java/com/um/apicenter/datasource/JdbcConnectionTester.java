@@ -39,6 +39,14 @@ public class JdbcConnectionTester {
         }
     }
 
+    public Connection open(ManagedDataSource dataSource, String password) throws SQLException {
+        try {
+            return openConnection(dataSource, password);
+        } catch (ReflectiveOperationException | IOException exception) {
+            throw new SQLException("JDBC driver unavailable", exception);
+        }
+    }
+
     private Connection openConnection(ManagedDataSource dataSource, String password)
             throws SQLException, ClassNotFoundException, ReflectiveOperationException, IOException {
         Properties properties = new Properties();

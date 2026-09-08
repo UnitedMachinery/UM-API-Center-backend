@@ -1,0 +1,19 @@
+# Production configuration: secrets are supplied by the server environment only.
+# Start the application with: --spring.profiles.active=prod
+
+spring:
+  datasource:
+    url: ${PLATFORM_DB_URL}
+    username: ${PLATFORM_DB_USERNAME}
+    password: ${PLATFORM_DB_PASSWORD}
+
+server:
+  port: ${SERVER_PORT:8080}
+  address: 127.0.0.1
+  forward-headers-strategy: framework
+
+um:
+  security:
+    require-https: true
+  admin-session:
+    cookie-secure: true

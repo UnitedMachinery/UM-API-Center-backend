@@ -1,6 +1,8 @@
 package com.um.apicenter.common;
 
 import com.um.apicenter.admin.AdminAuthenticationException;
+import com.um.apicenter.apidefinition.ApiDefinitionNotFoundException;
+import com.um.apicenter.apidefinition.ApiDefinitionValidationException;
 import com.um.apicenter.datasource.DataSourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -46,11 +48,25 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.failure(requestId(request), "DATASOURCE_NOT_FOUND", "数据源不存在"));
     }
 
+    @ExceptionHandler(ApiDefinitionNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleApiDefinitionNotFound(
+            ApiDefinitionNotFoundException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.failure(requestId(request), "API_NOT_FOUND", "接口配置不存在"));
+    }
+
+    @ExceptionHandler(ApiDefinitionValidationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleApiDefinitionValidation(
+            ApiDefinitionValidationException exception, HttpServletRequest request) {
+        return ResponseEntity.badRequest()
+                .body(ApiResponse.failure(requestId(request), "API_DEFINITION_INVALID", exception.getMessage()));
+    }
+
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<ApiResponse<Void>> handleDuplicateKey(
             DuplicateKeyException exception, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ApiResponse.failure(requestId(request), "DUPLICATE_RESOURCE", "名称已存在"));
+                .body(ApiResponse.failure(requestId(request), "DUPLICATE_RESOURCE", "名称或接口路径已存在"));
     }
 
     @ExceptionHandler(Exception.class)
