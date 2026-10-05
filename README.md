@@ -20,4 +20,10 @@ OpenEdge 连接测试前，确认 `vendor/openedge.jar` 存在即可。
 .\mvnw.cmd exec:java
 ```
 
-将输出的哈希替换到数据库管理员提供的 `INSERT` 语句中。生产环境保持 `REQUIRE_HTTPS=true` 和 `ADMIN_COOKIE_SECURE=true`；仅本地 HTTP 开发时可显式设为 `false`。
+将输出的哈希替换到数据库管理员提供的 `INSERT` 语句中。公网业务调用保持 HTTPS；本项目已确认内网管理后台 HTTP 例外，在服务器设置 `ADMIN_COOKIE_SECURE=false`。
+
+## 部署与更新记录
+
+读取 [实际部署与更新手册](docs/OPERATIONS.md)。当前服务器使用 9090，管理后台为 `http://192.168.10.185/um-api-center/`。
+
+V0.1.2 更新前在开发库和生产库通过 Navicat 执行 `database/mysql/005_v0_1_2_call_log_diagnostics.sql`。诊断详情仅通过管理员调用日志接口提供，公网仍返回统一认证失败信息。

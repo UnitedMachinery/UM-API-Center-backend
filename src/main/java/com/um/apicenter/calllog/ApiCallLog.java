@@ -10,6 +10,7 @@ public class ApiCallLog {
     private String username;
     private String clientIp;
     private String paramsSummary;
+    private String requestDiagnostics;
     private String result;
     private String errorCode;
     private Integer recordCount;
@@ -30,6 +31,8 @@ public class ApiCallLog {
     public void setClientIp(String clientIp) { this.clientIp = clientIp; }
     public String getParamsSummary() { return paramsSummary; }
     public void setParamsSummary(String paramsSummary) { this.paramsSummary = paramsSummary; }
+    public String getRequestDiagnostics() { return requestDiagnostics; }
+    public void setRequestDiagnostics(String requestDiagnostics) { this.requestDiagnostics = requestDiagnostics; }
     public String getResult() { return result; }
     public void setResult(String result) { this.result = result; }
     public String getErrorCode() { return errorCode; }

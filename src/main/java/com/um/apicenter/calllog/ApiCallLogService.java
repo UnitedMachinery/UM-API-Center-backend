@@ -27,7 +27,10 @@ public class ApiCallLogService {
 
     public void record(String requestId, Long apiId, String apiPath, String username, String clientIp,
                        Map<String, Object> parameterSummary, String result, String errorCode,
-                       Integer recordCount, int durationMs) {
+                       Integer recordCount, int durationMs, Map<String, Object> diagnostics) {
+        if (apiId == null) {
+            return;
+        }
         try {
             ApiCallLog log = new ApiCallLog();
             log.setRequestId(requestId);
@@ -36,6 +39,7 @@ public class ApiCallLogService {
             log.setUsername(username);
             log.setClientIp(clientIp);
             log.setParamsSummary(parameterSummary == null ? null : objectMapper.writeValueAsString(parameterSummary));
+            log.setRequestDiagnostics(diagnostics == null ? null : objectMapper.writeValueAsString(diagnostics));
             log.setResult(result);
             log.setErrorCode(errorCode);
             log.setRecordCount(recordCount);
@@ -59,7 +63,7 @@ public class ApiCallLogService {
     private LogResponse toResponse(ApiCallLog log) {
         return new LogResponse(log.getId(), log.getRequestId(), log.getApiId(), log.getApiPath(), log.getUsername(),
                 log.getClientIp(), readParameterSummary(log.getParamsSummary()), log.getResult(), log.getErrorCode(),
-                log.getRecordCount(), log.getDurationMs(), log.getCreatedAt());
+                log.getRecordCount(), log.getDurationMs(), log.getCreatedAt(), readParameterSummary(log.getRequestDiagnostics()));
     }
 
     private Map<String, Object> readParameterSummary(String summary) {
@@ -78,5 +82,5 @@ public class ApiCallLogService {
     public record LogPage(List<LogResponse> records, long total, int page, int pageSize) { }
     public record LogResponse(Long id, String requestId, Long apiId, String apiPath, String username, String clientIp,
                               Map<String, Object> paramsSummary, String result, String errorCode, Integer recordCount,
-                              int durationMs, LocalDateTime createdAt) { }
+                              int durationMs, LocalDateTime createdAt, Map<String, Object> requestDiagnostics) { }
 }

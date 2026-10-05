@@ -39,4 +39,13 @@ class BusinessParameterValidatorTest {
         assertEquals("V001", summary.get("vendor_code"));
         assertEquals("***", summary.get("phone"));
     }
+
+    @Test
+    void rawInvalidParametersCannotLeakNestedCredentialsOrGrowSummaryWithoutBound() {
+        Map<String, Object> summary = validator.maskedSummary(
+                Map.of("vendor_code", Map.of("password", "secret"), "phone", "private-phone", "page", "x".repeat(1000)), definitions);
+        assertEquals("[非标量值，内容未记录]", summary.get("vendor_code"));
+        assertEquals("***", summary.get("phone"));
+        assertEquals(512 + "…（已截断）".length(), ((String) summary.get("page")).length());
+    }
 }

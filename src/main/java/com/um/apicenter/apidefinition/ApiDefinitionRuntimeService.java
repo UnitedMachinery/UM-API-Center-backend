@@ -18,9 +18,6 @@ public class ApiDefinitionRuntimeService {
         if (definition == null) {
             throw BusinessApiException.notFound();
         }
-        if (!definition.isEnabled()) {
-            throw BusinessApiException.disabled();
-        }
         return new RuntimeDefinition(definition, definitionService.readParameters(definition));
     }
 

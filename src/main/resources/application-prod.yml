@@ -16,4 +16,7 @@ um:
   security:
     require-https: true
   admin-session:
-    cookie-secure: true
+    # The intranet management UI is intentionally served over HTTP at the
+    # Linux address. Keep HTTPS as the default; production opts out through
+    # the server-only ADMIN_COOKIE_SECURE environment variable.
+    cookie-secure: ${ADMIN_COOKIE_SECURE:true}

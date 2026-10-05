@@ -6,6 +6,7 @@ public class BusinessApiException extends RuntimeException {
 
     private final String code;
     private final HttpStatus status;
+    private String diagnosticCode;
 
     private BusinessApiException(String code, String message, HttpStatus status) {
         super(message);
@@ -15,9 +16,17 @@ public class BusinessApiException extends RuntimeException {
 
     public String getCode() { return code; }
     public HttpStatus getStatus() { return status; }
+    public String getDiagnosticCode() { return diagnosticCode == null ? code : diagnosticCode; }
 
     public static BusinessApiException authenticationFailed() {
-        return new BusinessApiException("AUTH_FAILED", "认证失败", HttpStatus.UNAUTHORIZED);
+        return authenticationFailed("AUTH_FAILED");
+    }
+
+    // Only persisted in the administrator-visible log; never sent to callers.
+    public static BusinessApiException authenticationFailed(String diagnosticCode) {
+        BusinessApiException exception = new BusinessApiException("AUTH_FAILED", "认证失败", HttpStatus.UNAUTHORIZED);
+        exception.diagnosticCode = diagnosticCode;
+        return exception;
     }
 
     public static BusinessApiException notFound() {

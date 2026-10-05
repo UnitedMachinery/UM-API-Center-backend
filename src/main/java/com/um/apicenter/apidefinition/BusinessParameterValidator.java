@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Component
@@ -103,7 +104,19 @@ public class BusinessParameterValidator {
         Map<String, Object> summary = new LinkedHashMap<>();
         for (ApiParameterDefinition definition : definitions) {
             Object value = parameters.get(definition.name());
-            summary.put(definition.name(), definition.maskedInLog() && value != null ? "***" : value);
+            String name = definition.name().toLowerCase(Locale.ROOT);
+            boolean sensitive = definition.maskedInLog() || name.contains("password") || name.contains("passwd")
+                    || name.contains("secret") || name.contains("token");
+            Object safeValue = value;
+            if (value != null && sensitive) {
+                safeValue = "***";
+            } else if (value instanceof String text && text.length() > 512) {
+                safeValue = text.substring(0, 512) + "…（已截断）";
+            } else if (value != null && !(value instanceof String || value instanceof Number
+                    || value instanceof Boolean || value instanceof LocalDate)) {
+                safeValue = "[非标量值，内容未记录]";
+            }
+            summary.put(definition.name(), safeValue);
         }
         return summary;
     }

@@ -13,10 +13,10 @@ public interface ApiCallLogMapper {
     @Insert("""
             INSERT INTO api_call_log (
                 request_id, api_id, api_path, username, client_ip, params_summary,
-                result, error_code, record_count, duration_ms
+                result, error_code, record_count, duration_ms, request_diagnostics
             ) VALUES (
                 #{requestId}, #{apiId}, #{apiPath}, #{username}, #{clientIp}, #{paramsSummary},
-                #{result}, #{errorCode}, #{recordCount}, #{durationMs}
+                #{result}, #{errorCode}, #{recordCount}, #{durationMs}, #{requestDiagnostics}
             )
             """)
     void insert(ApiCallLog log);
@@ -26,9 +26,12 @@ public interface ApiCallLogMapper {
             SELECT id, request_id AS requestId, api_id AS apiId, api_path AS apiPath,
                    username, client_ip AS clientIp, params_summary AS paramsSummary,
                    result, error_code AS errorCode, record_count AS recordCount,
-                   duration_ms AS durationMs, created_at AS createdAt
+                   duration_ms AS durationMs, created_at AS createdAt, request_diagnostics AS requestDiagnostics
             FROM api_call_log
             <where>
+              (api_id IS NOT NULL OR EXISTS (
+                  SELECT 1 FROM api_definition d WHERE d.api_path = api_call_log.api_path
+              ))
               <if test="filter.fromTime != null"> AND created_at <![CDATA[>=]]> #{filter.fromTime}</if>
               <if test="filter.toTime != null"> AND created_at <![CDATA[<=]]> #{filter.toTime}</if>
               <if test="filter.username != null and filter.username != ''"> AND username = #{filter.username}</if>
@@ -47,6 +50,9 @@ public interface ApiCallLogMapper {
             SELECT COUNT(*)
             FROM api_call_log
             <where>
+              (api_id IS NOT NULL OR EXISTS (
+                  SELECT 1 FROM api_definition d WHERE d.api_path = api_call_log.api_path
+              ))
               <if test="filter.fromTime != null"> AND created_at <![CDATA[>=]]> #{filter.fromTime}</if>
               <if test="filter.toTime != null"> AND created_at <![CDATA[<=]]> #{filter.toTime}</if>
               <if test="filter.username != null and filter.username != ''"> AND username = #{filter.username}</if>
